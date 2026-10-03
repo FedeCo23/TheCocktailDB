@@ -101,10 +101,23 @@ cercaCocktail.addEventListener("click", () => {
 });
 
 
+//----------------------------RICERCA CON TASTO INVIO
+
+ // Controlliamo quale tasto è stato premuto
+inputCocktail.addEventListener("keydown", (evento) => {
+    // Controlliamo quale tasto è stato premuto
+
+    // Se il tasto premuto è Invio...
+    if (evento.key === "Enter") {
+        
+// ...simuliamo un click sul pulsante Cerca
+        cercaCocktail.click();
+        
+    }
+});
 
 
 
-//aggiungere ricerca anche con il tasto invio
 //aggiungere la possibilità di cliccare sul cocktail per vedere la ricetta
 //aggiungere la possibilità di salvare i cocktail preferiti
 //aggiungere la possibilità di trovare i cocktail con il testo inserito in qualsiasi parte del nome
