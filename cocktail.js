@@ -21,11 +21,14 @@ fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`)
 
         const ingredienti = document.getElementById("ingredienti");
 
+        // Cicliamo attraverso gli ingredienti e le misure del cocktail
         for (let i = 1; i <= 15; i++) {
 
+            // Recuperiamo l'ingrediente e la misura corrispondente
             const ingrediente = cocktail[`strIngredient${i}`];
             const misura = cocktail[`strMeasure${i}`];
 
+            // Se l'ingrediente esiste, creiamo un elemento <li> e lo aggiungiamo alla lista degli ingredienti
             if (ingrediente) {
                 const li = document.createElement("li");
 
@@ -34,5 +37,5 @@ fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`)
                 ingredienti.appendChild(li);
             }
         }
-    
+
     });

@@ -126,10 +126,83 @@ inputCocktail.addEventListener("keydown", (evento) => {
 });
 
 
+//----------------------------RICERCA PER CATEGORIA
 
-//aggiungere la possibilità di cliccare sul cocktail per vedere la ricetta
+const categoriaCocktail = document.getElementById("categoriaCocktail");
+const filtraCategoria = document.getElementById("filtraCategoria");
+
+
+//----------------------------FETCH API CATEGORIE E CREAZIONE SELECT
+fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list")
+    .then(response => response.json())
+    .then(data => {
+
+        data.drinks.forEach(categoria => {
+
+            const option = document.createElement("option");
+
+            option.value = categoria.strCategory;
+            option.textContent = categoria.strCategory;
+
+            categoriaCocktail.appendChild(option);
+        });
+    });
+// Aggiungiamo un evento al click del pulsante di filtro per categoria
+filtraCategoria.addEventListener("click", () => {
+
+    const categoria = categoriaCocktail.value;
+
+    // Controlliamo se l'input non è vuoto
+    if (categoria !== "") {
+
+        // Se l'input non è vuoto, creiamo l'URL per la richiesta all'API
+        const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${categoria}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                mostraCocktail(data.drinks);
+            });
+    }
+});
+
+//----------------------------RICERCA CON TASTO INVIO PER CATEGORIA
+
+// Controlliamo quale tasto è stato premuto
+categoriaCocktail.addEventListener("keydown", (evento) => {
+
+
+    // Se il tasto premuto è Invio...
+    if (evento.key === "Enter") {
+
+        // ...simuliamo un click sul pulsante Cerca
+        filtraCategoria.click();
+    }
+});
+
+//----------------------------COCKTAIL CASUALE
+
+//----------------------------COCKTAIL CASUALE
+
+const cocktailCasuale = document.getElementById("cocktailCasuale");
+
+cocktailCasuale.addEventListener("click", () => {
+
+    fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
+        .then(response => response.json())
+        .then(data => {
+            mostraCocktail(data.drinks);
+        });
+});
+
+
+
+
+//aggiungere filtro alcolico/non alcolico
+//aggiungere filtri per categoria
+//aggiungere filtri per bicchiere
+
+
 //aggiungere la possibilità di salvare i cocktail preferiti
-//aggiungere la possibilità di trovare i cocktail con il testo inserito in qualsiasi parte del nome
-//aggiungere ricerca per ingredienti//aggiungere ricerca per categoria
-//aggiungere ricerca per grado alcolico
-//aggiungere filtri per ingredienti, categoria e grado alcolico
+//creare una pagina preferiti dove vengono mostrati i cocktail salvati
+
