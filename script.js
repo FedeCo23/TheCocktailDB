@@ -52,7 +52,18 @@ function mostraCocktail(cocktailArray) {
 
         // Usiamo il nome del cocktail come testo alternativo dell'immagine
         cocktailImg.alt = cocktail.strDrink;
+
+
+
+        //----------------------------LINK PAGINA COCKTAIL
+
+        cocktailElement.addEventListener("click", () => {
+            window.location.href = `cocktail.html?id=${cocktail.idDrink}`;
+        });
     });
+
+
+
 };
 
 
@@ -98,21 +109,19 @@ cercaCocktail.addEventListener("click", () => {
         // Se l'input è vuoto, mostriamo un messaggio di errore
         alert("Per favore, inserisci il nome di un cocktail.");
     }
-});
-
+})
 
 //----------------------------RICERCA CON TASTO INVIO
 
- // Controlliamo quale tasto è stato premuto
+// Controlliamo quale tasto è stato premuto
 inputCocktail.addEventListener("keydown", (evento) => {
-    // Controlliamo quale tasto è stato premuto
+
 
     // Se il tasto premuto è Invio...
     if (evento.key === "Enter") {
-        
-// ...simuliamo un click sul pulsante Cerca
+
+        // ...simuliamo un click sul pulsante Cerca
         cercaCocktail.click();
-        
     }
 });
 
@@ -121,7 +130,6 @@ inputCocktail.addEventListener("keydown", (evento) => {
 //aggiungere la possibilità di cliccare sul cocktail per vedere la ricetta
 //aggiungere la possibilità di salvare i cocktail preferiti
 //aggiungere la possibilità di trovare i cocktail con il testo inserito in qualsiasi parte del nome
-//aggiungere ricerca per ingredienti
-//aggiungere ricerca per categoria  
+//aggiungere ricerca per ingredienti//aggiungere ricerca per categoria
 //aggiungere ricerca per grado alcolico
 //aggiungere filtri per ingredienti, categoria e grado alcolico

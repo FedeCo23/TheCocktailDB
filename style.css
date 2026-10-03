@@ -1,6 +1,8 @@
+
+
 #cocktails {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 20px;
 }
 
@@ -13,4 +15,23 @@
 img{
     width: 100%;
     height: auto;
+}
+/*DETTAGLIO COCKTAIL*/
+.boxContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+#immagineCocktail{
+    width: 40%;
+    height: auto;
+}
+
+.item2{
+    text-align: center;
+    height: auto;
+    
 }
