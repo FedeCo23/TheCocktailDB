@@ -182,7 +182,6 @@ categoriaCocktail.addEventListener("keydown", (evento) => {
 
 //----------------------------COCKTAIL CASUALE
 
-//----------------------------COCKTAIL CASUALE
 
 const cocktailCasuale = document.getElementById("cocktailCasuale");
 
@@ -197,9 +196,60 @@ cocktailCasuale.addEventListener("click", () => {
 
 
 
+//----------------------------RICERCA PER GRADO ALCOLICO
 
-//aggiungere filtro alcolico/non alcolico
-//aggiungere filtri per categoria
+const tipoCocktail = document.getElementById("tipoCocktail");
+const filtraTipo = document.getElementById("filtraTipo");
+
+
+//----------------------------FETCH API TIPI ALCOLICI
+
+fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list")
+    .then(response => response.json())
+    .then(data => {
+
+        data.drinks.forEach(tipo => {
+
+            const option = document.createElement("option");
+
+            option.value = tipo.strAlcoholic;
+            option.textContent = tipo.strAlcoholic;
+
+            tipoCocktail.appendChild(option);
+        });
+    });
+
+
+//----------------------------FILTRA COCKTAIL PER GRADO ALCOLICO
+
+filtraTipo.addEventListener("click", () => {
+
+    const tipo = tipoCocktail.value;
+
+    if (tipo !== "") {
+
+        const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=${tipo}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                mostraCocktail(data.drinks);
+            });
+    }
+});
+
+
+//----------------------------RICERCA CON TASTO INVIO
+
+tipoCocktail.addEventListener("keydown", (evento) => {
+
+    if (evento.key === "Enter") {
+        filtraTipo.click();
+    }
+});
+
+
+
 //aggiungere filtri per bicchiere
 
 
