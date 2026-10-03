@@ -1,37 +1,268 @@
 
 
-#cocktails {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 20px;
+/*--------------------------VARIABILI*/
+:root {
+    --sfondo: #200012;
+    --superficie: #330a22;
+    --bordo: #5a2744;
+    --testo: #ffffff;
+    --testo-soft: #c9a9bb;
+    --accento: #e8b04a;
+    --accento-hover: #f3c46d;
+    --raggio: 8px;
 }
 
-.cocktail-card {
-    border: 1px solid #ccc;
-    padding: 15px;
+/*--------------------------RESET E BASE*/
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 16px;
+    background: var(--sfondo);
+    color: var(--testo);
+    font-family: "Open Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+}
+
+h1 {
+    flex: 1 1 100%;
+    margin: 8px 0 12px;
     text-align: center;
+    font-size: 1.75rem;
 }
 
-img{
+h2 {
+    margin: 0 0 12px;
+    font-size: 1.25rem;
+}
+
+img {
+    display: block;
     width: 100%;
     height: auto;
 }
-/*DETTAGLIO COCKTAIL*/
-.boxContainer{
+
+:focus-visible {
+    outline: 2px solid var(--accento);
+    outline-offset: 2px;
+}
+
+/*--------------------------HOME: BARRA DI RICERCA E FILTRI */
+body:has(#cocktails) {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    gap: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-content: flex-start;
 }
 
-#immagineCocktail{
-    width: 40%;
-    height: auto;
+input,
+select,
+button {
+    font: inherit;
+    padding: 10px 12px;
+    border-radius: var(--raggio);
+    border: 1px solid var(--bordo);
+    min-height: 44px; 
 }
 
-.item2{
+input,
+select {
+    flex: 1 1 12rem;
+    min-width: 0;
+    background: var(--testo);
+    color: #2a2a2a;
+}
+
+button {
+    flex: 0 0 auto;
+    background: var(--accento);
+    border-color: var(--accento);
+    color: #2a1000;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:hover {
+    background: var(--accento-hover);
+}
+
+
+#cocktailCasuale {
+    flex: 1 1 100%;
+    background: transparent;
+    color: var(--accento);
+    border-color: var(--accento);
+}
+
+#cocktailCasuale:hover {
+    background: var(--superficie);
+}
+
+/*--------------------------HOME: GRIGLIA CARD*/
+#cocktails {
+    flex: 1 1 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colonne su mobile */
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cocktail-card {
+    cursor: pointer;
     text-align: center;
-    height: auto;
-    
+    background: var(--superficie);
+    border: 1px solid var(--bordo);
+    border-radius: var(--raggio);
+    overflow: hidden;
+    transition: transform 0.15s, border-color 0.15s;
+}
+
+.cocktail-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accento);
+}
+
+/* l'immagine viene creata dopo il titolo (h2) nel JS:
+   con order la mostriamo sopra il nome */
+.cocktail-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.cocktail-card img {
+    order: 1;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+}
+
+.cocktail-card h2 {
+    order: 2;
+    margin: 0;
+    padding: 8px 6px 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--testo-soft);
+}
+
+/*--------------------------DETTAGLIO COCKTAIL (cocktail.html)*/
+.boxContainer {
+    display: flex;
+    flex-direction: column; /* una colonna su mobile */
+    gap: 24px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.item1 {
+    width: 100%;
+}
+
+#nomeCocktail {
+    font-size: 1.75rem;
+}
+
+#immagineCocktail {
+    width: 100%;
+    border-radius: var(--raggio);
+}
+
+#ingredienti {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#ingredienti li {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--bordo);
+    color: var(--testo-soft);
+}
+
+.item2 {
+    max-width: 1000px;
+    margin: 24px auto 0;
+    text-align: left;
+}
+
+#preparazione {
+    margin: 0;
+    max-width: 70ch; /* righe leggibili */
+    color: var(--testo-soft);
+}
+
+/*TABLET  (>= 600px) */
+@media (min-width: 600px) {
+    body {
+        padding: 24px;
+    }
+
+    h1 {
+        font-size: 2.25rem;
+    }
+
+   
+    input,
+    select {
+        flex-basis: 16rem;
+    }
+
+    #cocktailCasuale {
+        flex: 0 0 auto;
+    }
+
+    #cocktails {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+    }
+
+    .cocktail-card h2 {
+        font-size: 1rem;
+    }
+}
+
+/* PC  (>= 900px) */
+@media (min-width: 900px) {
+    body {
+        padding: 32px 48px;
+    }
+
+    #cocktails {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+    }
+
+    /* immagine a sinistra, ingredienti a destra */
+    .boxContainer {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 48px;
+    }
+
+    .item1 {
+        flex: 1 1 0;
+    }
+
+    #nomeCocktail {
+        font-size: 2.25rem;
+    }
+
+    #immagineCocktail {
+        width: 100%;
+    }
+
+    .item2 {
+        margin-top: 40px;
+    }
+}
+
+/*SCHERMI GRANDI  (>= 1200px) */
+@media (min-width: 1200px) {
+    #cocktails {
+        grid-template-columns: repeat(5, 1fr);
+    }
 }

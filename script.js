@@ -222,10 +222,10 @@ fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list")
 
 //----------------------------FILTRA COCKTAIL PER GRADO ALCOLICO
 
+// Aggiungiamo un evento al click del pulsante di filtro per tipo
 filtraTipo.addEventListener("click", () => {
 
     const tipo = tipoCocktail.value;
-
     if (tipo !== "") {
 
         const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=${tipo}`;
