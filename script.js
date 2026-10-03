@@ -53,11 +53,32 @@ function mostraCocktail(cocktailArray) {
         // Usiamo il nome del cocktail come testo alternativo dell'immagine
         cocktailImg.alt = cocktail.strDrink;
 
+        //----------------------------PREFERITI
+
+        const cuore = document.createElement("button");
+        cuore.classList.add("preferitiButton");
+        cuore.textContent = "♡";
+
+        cocktailElement.appendChild(cuore);
+
+        // Aggiungiamo un evento al click del pulsante "cuore"
+        cuore.addEventListener("click", () => {
+
+            // Recuperiamo l'array dei preferiti dal localStorage, se non esiste creiamo un array vuoto
+            const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
+
+            preferiti.push(cocktail.idDrink);
+
+            // Salviamo l'array aggiornato dei preferiti nel localStorage
+            localStorage.setItem("preferiti", JSON.stringify(preferiti));
+
+            cuore.textContent = "♥";
+        });
 
 
         //----------------------------LINK PAGINA COCKTAIL
 
-        cocktailElement.addEventListener("click", () => {
+      cocktailElement.addEventListener("click", () => {
             window.location.href = `cocktail.html?id=${cocktail.idDrink}`;
         });
     });
@@ -68,7 +89,7 @@ function mostraCocktail(cocktailArray) {
 
 
 
-//--------------------------FETCH API COCKTAIL E CREAZIONE CARD
+//--------------------------FETCH API COCKTAIL BAASE
 
 fetch("https://www.thecocktaildb.com/api/json/v1/1/search.php?f=j") // Facciamo una richiesta all'API
     .then(response => response.json())  // Trasforma la risposta ricevuta in JSON utilizzabile da JavaScript
