@@ -271,9 +271,3 @@ tipoCocktail.addEventListener("keydown", (evento) => {
 
 
 
-//aggiungere filtri per bicchiere
-
-
-//aggiungere la possibilità di salvare i cocktail preferiti
-//creare una pagina preferiti dove vengono mostrati i cocktail salvati
-
