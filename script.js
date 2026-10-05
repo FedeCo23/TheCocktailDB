@@ -72,15 +72,21 @@ function mostraCocktail(cocktailArray) {
         // Aggiungiamo un evento al click del pulsante "cuore"
         cuore.addEventListener("click", () => {
 
-            const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
+// Recuperiamo i preferiti dal localStorage
+    const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
 
-            preferiti.push(cocktail.idDrink);
+    // Controlliamo se il cocktail è già nei preferiti
+    if (!preferiti.includes(cocktail.idDrink)) {
 
-            localStorage.setItem("preferiti", JSON.stringify(preferiti));
+        // Aggiungiamo il cocktail ai preferiti se non è già presente
+        preferiti.push(cocktail.idDrink);
 
-            cuore.textContent = "♥";
-            cuore.classList.add("preferito");
-        });
+        localStorage.setItem("preferiti", JSON.stringify(preferiti));
+
+        cuore.textContent = "♥";
+        cuore.classList.add("preferito");
+    }
+});
         //----------------------------LINK PAGINA COCKTAIL
 
         cocktailElement.addEventListener("click", () => {
