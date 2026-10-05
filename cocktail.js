@@ -1,41 +1,56 @@
 //--------------------------RECUPERO ID COCKTAIL DALLA URL
 
 const params = new URLSearchParams(window.location.search);
-
 const cocktailId = params.get("id");
 
+const nomeCocktail = document.getElementById("nomeCocktail");
+const immagineCocktail = document.getElementById("immagineCocktail");
+const preparazione = document.getElementById("preparazione");
+const ingredienti = document.getElementById("ingredienti");
 
-//--------------------------FETCH API COCKTAIL E CREAZIONE CARD TRAMITE ID
-fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${cocktailId}`)
-    .then(response => response.json())
-    .then(data => {
+function mostraErrore(testo) {
+    nomeCocktail.textContent = testo;
+    immagineCocktail.remove();
+}
 
-        // Recuperiamo il cocktail dall'array "drinks" restituito dall'API
-        const cocktail = data.drinks[0];
 
-        document.getElementById("nomeCocktail").textContent = cocktail.strDrink;
+//--------------------------FETCH API COCKTAIL TRAMITE ID
 
-        document.getElementById("immagineCocktail").src = cocktail.strDrinkThumb;
+if (!cocktailId) {
+    mostraErrore("Cocktail non specificato.");
+} else {
+    fetch(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${encodeURIComponent(cocktailId)}`)
+        .then(response => response.json())
+        .then(data => {
 
-        document.getElementById("preparazione").textContent = cocktail.strInstructions;
-
-        const ingredienti = document.getElementById("ingredienti");
-
-        // Cicliamo attraverso gli ingredienti e le misure del cocktail
-        for (let i = 1; i <= 15; i++) {
-
-            // Recuperiamo l'ingrediente e la misura corrispondente
-            const ingrediente = cocktail[`strIngredient${i}`];
-            const misura = cocktail[`strMeasure${i}`];
-
-            // Se l'ingrediente esiste, creiamo un elemento <li> e lo aggiungiamo alla lista degli ingredienti
-            if (ingrediente) {
-                const li = document.createElement("li");
-
-                li.textContent = `${misura || ""} ${ingrediente}`;
-
-                ingredienti.appendChild(li);
+            // Se l'id non esiste, "drinks" è null
+            if (!data.drinks) {
+                mostraErrore("Cocktail non trovato.");
+                return;
             }
-        }
 
-    });
+            const cocktail = data.drinks[0];
+
+            document.title = cocktail.strDrink;
+            nomeCocktail.textContent = cocktail.strDrink;
+            immagineCocktail.src = cocktail.strDrinkThumb;
+            immagineCocktail.alt = cocktail.strDrink;
+
+            // L'API offre spesso le istruzioni in italiano: se mancano usiamo l'inglese
+            preparazione.textContent = cocktail.strInstructionsIT || cocktail.strInstructions;
+
+            // Ingredienti e misure (al massimo 15)
+            for (let i = 1; i <= 15; i++) {
+
+                const ingrediente = cocktail[`strIngredient${i}`];
+                const misura = cocktail[`strMeasure${i}`];
+
+                if (ingrediente) {
+                    const li = document.createElement("li");
+                    li.textContent = `${misura ? misura.trim() + " " : ""}${ingrediente}`;
+                    ingredienti.appendChild(li);
+                }
+            }
+        })
+        .catch(() => mostraErrore("Errore di connessione. Riprova più tardi."));
+}

@@ -11,12 +11,29 @@
 <body>
 
     <h1>I miei preferiti ❤️</h1>
-    
+    <p class="nav-link"><a href="index.html">← Torna ai cocktail</a></p>
+
+    <!-- Ricerca per nome (filtra mentre scrivi) -->
+    <input type="text" id="inputCocktail" placeholder="Cerca nei preferiti">
+
+    <!-- Filtri: le opzioni sono create dai preferiti salvati -->
+    <select id="categoriaCocktail" aria-label="Categoria">
+        <option value="">Tutte le categorie</option>
+    </select>
+
+    <select id="tipoCocktail" aria-label="Tipo">
+        <option value="">Tutti i tipi</option>
+    </select>
+
+    <button id="azzeraFiltri">Azzera filtri</button>
+
+    <!-- Apre un preferito a caso -->
+    <button id="cocktailCasuale">🍀 Un preferito a caso</button>
+
     <div id="preferiti"></div>
 
     <script src="preferiti.js"></script>
 
 </body>
-</html>
 
-<!--Sistemare il layout e lo stile dei preferiti -->
+</html>
