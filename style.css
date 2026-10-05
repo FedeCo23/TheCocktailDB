@@ -180,6 +180,8 @@ button:hover {
     border-color: var(--accento);
 }
 
+/* nel JS il titolo è creato prima dell'immagine:
+   con order mostriamo l'immagine sopra il nome */
 .cocktail-card img {
     order: 1;
     aspect-ratio: 1 / 1;
