@@ -57,28 +57,33 @@ function mostraCocktail(cocktailArray) {
 
         const cuore = document.createElement("button");
         cuore.classList.add("preferitiButton");
-        cuore.textContent = "♡";
+
+        const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
+
+        if (preferiti.includes(cocktail.idDrink)) {
+            cuore.textContent = "♥";
+            cuore.classList.add("preferito");
+        } else {
+            cuore.textContent = "♡";
+        }
 
         cocktailElement.appendChild(cuore);
 
         // Aggiungiamo un evento al click del pulsante "cuore"
         cuore.addEventListener("click", () => {
 
-            // Recuperiamo l'array dei preferiti dal localStorage, se non esiste creiamo un array vuoto
             const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
 
             preferiti.push(cocktail.idDrink);
 
-            // Salviamo l'array aggiornato dei preferiti nel localStorage
             localStorage.setItem("preferiti", JSON.stringify(preferiti));
 
             cuore.textContent = "♥";
+            cuore.classList.add("preferito");
         });
-
-
         //----------------------------LINK PAGINA COCKTAIL
 
-      cocktailElement.addEventListener("click", () => {
+        cocktailElement.addEventListener("click", () => {
             window.location.href = `cocktail.html?id=${cocktail.idDrink}`;
         });
     });
@@ -270,4 +275,4 @@ tipoCocktail.addEventListener("keydown", (evento) => {
 });
 
 
-//prova
+
