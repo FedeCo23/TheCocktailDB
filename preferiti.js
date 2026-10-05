@@ -34,7 +34,7 @@ preferiti.forEach(id => {
             //----------------------------PREFERITI
 
             const cuore = document.createElement("button");
-            cuore.classList.add("preferitiButton");
+            cuore.classList.add("preferitiButton", "preferito");
             cuore.textContent = "♥";
 
             cuore.addEventListener("click", () => {
@@ -46,7 +46,7 @@ preferiti.forEach(id => {
                 );
 
                 localStorage.setItem("preferiti", JSON.stringify(nuoviPreferiti));
-
+                cuore.textContent = "♡";
                 card.remove();
             });
 
