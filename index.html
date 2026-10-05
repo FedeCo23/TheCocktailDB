@@ -10,31 +10,26 @@
 
 <body>
     <h1>🍸 Cocktail DB</h1>
-<p><a href="preferiti.html">I miei preferiti ❤️</a></p>
-    
-    <!-- Aggiungi un campo di input per la ricerca dei cocktail -->
-    <input type="text" id="inputCocktail" placeholder="Cerca un cocktail">
+    <p class="nav-link"><a href="preferiti.html">I miei preferiti ❤️</a></p>
 
+    <!-- Ricerca per nome -->
+    <input type="text" id="inputCocktail" placeholder="Cerca un cocktail">
     <button id="cercaCocktail">Cerca</button>
 
-    <!-- Aggiungi un menu a tendina per selezionare la categoria del cocktail -->
-    <select id="categoriaCocktail">
+    <!-- Filtro per categoria -->
+    <select id="categoriaCocktail" aria-label="Categoria">
         <option value="">Seleziona categoria</option>
-    
     </select>
-<!-- Aggiungi un pulsante per filtrare i cocktail per categoria -->
     <button id="filtraCategoria">Filtra</button>
 
-    <!-- Aggiungi un pulsante per ottenere un cocktail casuale -->
+    <!-- Filtro per tipo -->
+    <select id="tipoCocktail" aria-label="Tipo">
+        <option value="">Seleziona tipo</option>
+    </select>
+    <button id="filtraTipo">Filtra</button>
+
+    <!-- Cocktail casuale -->
     <button id="cocktailCasuale">🍀 Ti senti fortunato?</button>
-
-    <!-- Aggiungi un menu a tendina per selezionare il tipo di cocktail -->
-<select id="tipoCocktail">
-    <option value="">Seleziona tipo</option>
-</select>
-
-<!-- Aggiungi un pulsante per filtrare i cocktail per tipo -->
-<button id="filtraTipo">Filtra</button>
 
     <div id="cocktails"></div>
 
@@ -42,5 +37,3 @@
 </body>
 
 </html>
-
-<!--Se clicco i preferiti non deve restituire i cocktail -->

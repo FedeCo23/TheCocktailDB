@@ -1,15 +1,49 @@
-
-
 //--------------------------VARIABILI
 
-// Cerchiamo nell'HTML l'elemento che ha id="cocktails" e lo salviamo nella variabile cocktailsContainer
+const API = "https://www.thecocktaildb.com/api/json/v1/1";
+
 const cocktailsContainer = document.getElementById("cocktails");
-
-// Cerchiamo nell'HTML l'elemento che ha id="searchInput" e lo salviamo nella variabile searchInput
 const inputCocktail = document.getElementById("inputCocktail");
-
-// Cerchiamo nell'HTML l'elemento che ha id="searchButton" e lo salviamo nella variabile searchButton
 const cercaCocktail = document.getElementById("cercaCocktail");
+const categoriaCocktail = document.getElementById("categoriaCocktail");
+const filtraCategoria = document.getElementById("filtraCategoria");
+const tipoCocktail = document.getElementById("tipoCocktail");
+const filtraTipo = document.getElementById("filtraTipo");
+const cocktailCasuale = document.getElementById("cocktailCasuale");
+
+
+//--------------------------FUNZIONI DI SUPPORTO
+
+function leggiPreferiti() {
+    return JSON.parse(localStorage.getItem("preferiti")) || [];
+}
+
+// Scarica i cocktail da un URL e li mostra; gestisce risultati vuoti ed errori di rete
+function caricaCocktail(url, messaggioVuoto = "Nessun cocktail trovato.") {
+    return fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error(`Errore HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            // Quando non ci sono risultati l'API restituisce null (o una stringa)
+            if (Array.isArray(data.drinks)) {
+                mostraCocktail(data.drinks);
+            } else {
+                alert(messaggioVuoto);
+            }
+        })
+        .catch(() => alert("Errore di connessione. Riprova più tardi."));
+}
+
+// Premendo Invio su un elemento, simula il click sul pulsante associato
+function invioConEnter(elemento, pulsante) {
+    elemento.addEventListener("keydown", (evento) => {
+        if (evento.key === "Enter") {
+            pulsante.click();
+        }
+    });
+}
 
 
 //--------------------------FUNZIONE PER CREARE CARD COCKTAIL
@@ -17,257 +51,142 @@ const cercaCocktail = document.getElementById("cercaCocktail");
 function mostraCocktail(cocktailArray) {
     cocktailsContainer.innerHTML = "";
 
-    cocktailArray.forEach(cocktail => { // "cocktail" rappresenta un cocktail alla volta
+    cocktailArray.forEach(cocktail => {
 
-        // Creiamo un nuovo elemento <div>
         const cocktailElement = document.createElement("div");
-
-        // Aggiungiamo il nuovo elemento <div> al contenitore dei cocktail
-        cocktailsContainer.appendChild(cocktailElement);
-
-        // Aggiungiamo la classe "cocktail-card" al nuovo elemento <div>
         cocktailElement.classList.add("cocktail-card");
 
-        // Creiamo un elemento <h2> per il nome     
+        // Nome
         const cocktailName = document.createElement("h2");
-
-        // Aggiungiamo l'elemento <h2> al contenitore dei cocktail
-        cocktailElement.appendChild(cocktailName);
-
-        // Inseriamo nel titolo il nome ricevuto dall'API
         cocktailName.textContent = cocktail.strDrink;
 
-
-
-        //----------------------------IMMAGINE COCKTAIL
-
-        // Aggiungiamo l'elemento <img> al contenitore dei cocktail
+        // Immagine
         const cocktailImg = document.createElement("img");
-
-        // Aggiungiamo l'elemento <img> al contenitore dei cocktail
-        cocktailElement.appendChild(cocktailImg);
-
-        // Impostiamo l'attributo src dell'elemento <img> con l'URL dell'immagine del cocktail
         cocktailImg.src = cocktail.strDrinkThumb;
-
-        // Usiamo il nome del cocktail come testo alternativo dell'immagine
         cocktailImg.alt = cocktail.strDrink;
 
-        //----------------------------PREFERITI
-
+        // Cuore preferiti
         const cuore = document.createElement("button");
         cuore.classList.add("preferitiButton");
-        cuore.textContent = "♡";
+        cuore.setAttribute("aria-label", `Preferito: ${cocktail.strDrink}`);
 
-        cocktailElement.appendChild(cuore);
-
-        // Aggiungiamo un evento al click del pulsante "cuore"
-        cuore.addEventListener("click", () => {
-
-            // Recuperiamo l'array dei preferiti dal localStorage, se non esiste creiamo un array vuoto
-            const preferiti = JSON.parse(localStorage.getItem("preferiti")) || [];
-
-            preferiti.push(cocktail.idDrink);
-
-            // Salviamo l'array aggiornato dei preferiti nel localStorage
-            localStorage.setItem("preferiti", JSON.stringify(preferiti));
-
+        if (leggiPreferiti().includes(cocktail.idDrink)) {
             cuore.textContent = "♥";
+            cuore.classList.add("preferito");
+        } else {
+            cuore.textContent = "♡";
+        }
+
+        cuore.addEventListener("click", (evento) => {
+
+            // Evitiamo che il click sul cuore apra la pagina del cocktail
+            evento.stopPropagation();
+
+            let preferiti = leggiPreferiti();
+
+            if (preferiti.includes(cocktail.idDrink)) {
+                // Già nei preferiti: lo togliamo
+                preferiti = preferiti.filter(id => id !== cocktail.idDrink);
+                cuore.textContent = "♡";
+                cuore.classList.remove("preferito");
+            } else {
+                // Non è nei preferiti: lo aggiungiamo
+                preferiti.push(cocktail.idDrink);
+                cuore.textContent = "♥";
+                cuore.classList.add("preferito");
+            }
+
+            localStorage.setItem("preferiti", JSON.stringify(preferiti));
         });
 
-
-        //----------------------------LINK PAGINA COCKTAIL
-
-      cocktailElement.addEventListener("click", () => {
+        // Click sulla card: apre la pagina del cocktail
+        cocktailElement.addEventListener("click", () => {
             window.location.href = `cocktail.html?id=${cocktail.idDrink}`;
         });
+
+        cocktailElement.append(cocktailName, cocktailImg, cuore);
+        cocktailsContainer.appendChild(cocktailElement);
     });
+}
 
 
+//--------------------------CARICAMENTO INIZIALE (cocktail che iniziano per "j")
 
-};
+caricaCocktail(`${API}/search.php?f=j`);
 
 
+//--------------------------RICERCA PER NOME
 
-//--------------------------FETCH API COCKTAIL BAASE
-
-fetch("https://www.thecocktaildb.com/api/json/v1/1/search.php?f=j") // Facciamo una richiesta all'API
-    .then(response => response.json())  // Trasforma la risposta ricevuta in JSON utilizzabile da JavaScript
-    .then(data => { // "data" contiene tutto quello che ci ha restituito l'API
-        mostraCocktail(data.drinks);
-
-    });
-
-//----------------------------RICERCA PER COCKTAIL
-
-// Aggiungiamo un evento al click del pulsante di ricerca
 cercaCocktail.addEventListener("click", () => {
 
-    // Recuperiamo il valore inserito dall'utente nell'input di ricerca  e rimuoviamo subito gli spazi
     const valoreCocktail = inputCocktail.value.trim();
 
-
-    // Controlliamo se l'input non è vuoto
     if (valoreCocktail !== "") {
-
-        // Se l'input non è vuoto, creiamo l'URL per la richiesta all'API
-        const url = `https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${valoreCocktail}`;
-
-        // Facciamo una richiesta all'API con l'URL creato
-        fetch(url)
-            // Trasforma la risposta ricevuta in JSON utilizzabile da JavaScript
-            .then(response => response.json())
-            // "data" contiene tutto quello che ci ha restituito l'API
-            .then(data => {
-                // Controlliamo se l'API ha restituito dei cocktail
-                if (data.drinks) {
-                    mostraCocktail(data.drinks);
-                } else {
-                    alert("Nessun cocktail trovato.");
-                }
-            });
+        // encodeURIComponent protegge da spazi e caratteri speciali
+        caricaCocktail(`${API}/search.php?s=${encodeURIComponent(valoreCocktail)}`);
     } else {
-        // Se l'input è vuoto, mostriamo un messaggio di errore
         alert("Per favore, inserisci il nome di un cocktail.");
-    }
-})
-
-//----------------------------RICERCA CON TASTO INVIO
-
-// Controlliamo quale tasto è stato premuto
-inputCocktail.addEventListener("keydown", (evento) => {
-
-
-    // Se il tasto premuto è Invio...
-    if (evento.key === "Enter") {
-
-        // ...simuliamo un click sul pulsante Cerca
-        cercaCocktail.click();
     }
 });
 
-
-//----------------------------RICERCA PER CATEGORIA
-
-const categoriaCocktail = document.getElementById("categoriaCocktail");
-const filtraCategoria = document.getElementById("filtraCategoria");
+invioConEnter(inputCocktail, cercaCocktail);
 
 
-//----------------------------FETCH API CATEGORIE E CREAZIONE SELECT
-fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?c=list")
+//--------------------------FILTRO PER CATEGORIA
+
+fetch(`${API}/list.php?c=list`)
     .then(response => response.json())
     .then(data => {
-
         data.drinks.forEach(categoria => {
-
             const option = document.createElement("option");
-
             option.value = categoria.strCategory;
             option.textContent = categoria.strCategory;
-
             categoriaCocktail.appendChild(option);
         });
-    });
-// Aggiungiamo un evento al click del pulsante di filtro per categoria
+    })
+    .catch(() => console.error("Impossibile caricare le categorie"));
+
 filtraCategoria.addEventListener("click", () => {
 
     const categoria = categoriaCocktail.value;
 
-    // Controlliamo se l'input non è vuoto
     if (categoria !== "") {
-
-        // Se l'input non è vuoto, creiamo l'URL per la richiesta all'API
-        const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?c=${categoria}`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                mostraCocktail(data.drinks);
-            });
+        // Alcune categorie contengono spazi e "/" (es. "Punch / Party Drink")
+        caricaCocktail(`${API}/filter.php?c=${encodeURIComponent(categoria)}`);
     }
 });
 
-//----------------------------RICERCA CON TASTO INVIO PER CATEGORIA
-
-// Controlliamo quale tasto è stato premuto
-categoriaCocktail.addEventListener("keydown", (evento) => {
+invioConEnter(categoriaCocktail, filtraCategoria);
 
 
-    // Se il tasto premuto è Invio...
-    if (evento.key === "Enter") {
-
-        // ...simuliamo un click sul pulsante Cerca
-        filtraCategoria.click();
-    }
-});
-
-//----------------------------COCKTAIL CASUALE
-
-
-const cocktailCasuale = document.getElementById("cocktailCasuale");
+//--------------------------COCKTAIL CASUALE
 
 cocktailCasuale.addEventListener("click", () => {
-
-    fetch("https://www.thecocktaildb.com/api/json/v1/1/random.php")
-        .then(response => response.json())
-        .then(data => {
-            mostraCocktail(data.drinks);
-        });
+    caricaCocktail(`${API}/random.php`);
 });
 
 
+//--------------------------FILTRO PER TIPO (ALCOLICO / ANALCOLICO)
 
-//----------------------------RICERCA PER GRADO ALCOLICO
-
-const tipoCocktail = document.getElementById("tipoCocktail");
-const filtraTipo = document.getElementById("filtraTipo");
-
-
-//----------------------------FETCH API TIPI ALCOLICI
-
-fetch("https://www.thecocktaildb.com/api/json/v1/1/list.php?a=list")
+fetch(`${API}/list.php?a=list`)
     .then(response => response.json())
     .then(data => {
-
         data.drinks.forEach(tipo => {
-
             const option = document.createElement("option");
-
             option.value = tipo.strAlcoholic;
             option.textContent = tipo.strAlcoholic;
-
             tipoCocktail.appendChild(option);
         });
-    });
+    })
+    .catch(() => console.error("Impossibile caricare i tipi"));
 
-
-//----------------------------FILTRA COCKTAIL PER GRADO ALCOLICO
-
-// Aggiungiamo un evento al click del pulsante di filtro per tipo
 filtraTipo.addEventListener("click", () => {
 
     const tipo = tipoCocktail.value;
+
     if (tipo !== "") {
-
-        const url = `https://www.thecocktaildb.com/api/json/v1/1/filter.php?a=${tipo}`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                mostraCocktail(data.drinks);
-            });
+        caricaCocktail(`${API}/filter.php?a=${encodeURIComponent(tipo)}`);
     }
 });
 
-
-//----------------------------RICERCA CON TASTO INVIO
-
-tipoCocktail.addEventListener("keydown", (evento) => {
-
-    if (evento.key === "Enter") {
-        filtraTipo.click();
-    }
-});
-
-
-//prova
+invioConEnter(tipoCocktail, filtraTipo);
